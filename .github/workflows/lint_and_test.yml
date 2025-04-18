@@ -1,0 +1,30 @@
+name: Lint And Test
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint project
+        run: npm run lint
+
+      - name: Test project
+        run: npm run test

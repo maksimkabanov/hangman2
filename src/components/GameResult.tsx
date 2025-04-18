@@ -17,13 +17,14 @@ export const GameResult = ({ result }: { result: Result }) => {
       )}
     >
       <div className="font-semibold">{result.question}</div>
-      <div className="p-1 bg-gray-800 rounded text-white text-xs">
-        ✅ Answer: <span className="font-bold uppercase">{result.word}</span>
+      <div className="p-1 bg-gray-800 rounded text-white text-xs flex flex-row items-center gap-2">
+        <span>✅ Answer:</span>
+        <span className="font-bold uppercase">{result.word}</span>
       </div>
 
       {correctLetters.length < lettersUsed.length && (
-        <div className="p-1 bg-gray-800 rounded text-white text-xs">
-          ❌ Wrong:{" "}
+        <div className="p-1 bg-gray-800 rounded text-white text-xs flex flex-row items-center gap-2">
+          <span>❌ Wrong:</span>
           <span className="font-bold uppercase tracking-widest">
             {lettersUsed.map((usedLetter) =>
               !correctLettersSet.has(usedLetter) ? (
@@ -35,11 +36,13 @@ export const GameResult = ({ result }: { result: Result }) => {
       )}
 
       {result.endTimestamp && (
-        <div className="text-xs opacity-60">
-          ⏳{" "}
-          {moment
-            .utc(result.endTimestamp - result.startTimestamp)
-            .format("HH:mm:ss")}
+        <div className="text-xs opacity-60 flex flex-row items-center gap-2">
+          <span>⏳</span>
+          <span>
+            {moment
+              .utc(result.endTimestamp - result.startTimestamp)
+              .format("HH:mm:ss")}
+          </span>
         </div>
       )}
     </div>

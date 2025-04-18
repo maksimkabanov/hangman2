@@ -2,6 +2,23 @@ import { Game } from "@firebaseTypes/base";
 import clsx from "clsx";
 import { LetterButton } from "./LetterButton";
 
+/**
+ * A component that displays the word to guess in the hangman game.
+ * Shows each letter as a button with different states based on whether it has been guessed.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <GameWord
+ *   game={{
+ *     word: "HELLO",
+ *     letters: "HE",
+ *     finished: false,
+ *     lifes: 5
+ *   }}
+ * />
+ * ```
+ */
 export const GameWord = ({ game }: { game: Game }) => {
   const lettersSet = new Set(game.letters);
   const wordLettersArray = game.word.split("");
