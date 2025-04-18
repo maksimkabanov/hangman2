@@ -1,54 +1,41 @@
-# React + TypeScript + Vite
+# 🔠 Hangman2 — Serverless Frontend Hangman Game (React + Redux Toolkit + Firebase)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> A work-in-progress Hangman game built with React, Redux Toolkit and Firebase (Functions, Firestore).
+> Includes a monorepo structure, typed backend logic, and Firebase Functions for server-side word validation.
+> A bit of Jest tests a bit of docs for now.
 
-Currently, two official plugins are available:
+- 🎮 [Live Demo](https://hangman.maxkab.com) — play right in your browser
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🧩 **Classic Hangman gameplay** — guess the word letter by letter
+- ⚡️ **Realtime Firestore updates** — no refresh needed
+- 🧠 **Letter validation via Firebase Functions**
+- 🗂️ **Monorepo structure** — clean separation of frontend and backend
+- 🌍 **100% serverless** — deployable on Firebase
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧱 Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Layer     | Tech                      |
+| --------- | ------------------------- |
+| Frontend  | React, Tailwind CSS, Vite |
+| Backend   | Firebase Functions        |
+| Database  | Firestore (NoSQL)         |
+| API Layer | Codegen                   |
+| Tooling   | TypeScript, Monorepo      |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+---
+
+## 📁 Structure
+
+```bash
+hangman2/
+├── functions/      # Firebase Functions
+├── src/            # Frontend app (React + Redux Toolkit + Tailwind)
+        ├── src/providers/firebase  # Functions Client
+└── graphql/        # Shared schema + typegen config
 ```
