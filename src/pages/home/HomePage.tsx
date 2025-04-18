@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { CurrentGameComponent } from "../../features/CurrentGame/CurrentGameComponent";
-import { ResultsComponent } from "../../features/Results/ResultsComponent";
+import { Statistics } from "../../components/Statistics";
 
 export const HomePage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -45,12 +45,7 @@ export const HomePage = () => {
 
         {/* Stats (visible on large screens) */}
         <div className="hidden md:flex flex-col border-l p-2 min-w-[300px] h-full justify-center bg-gray-900 text-white">
-          <div className="flex justify-between items-center border-b pb-2">
-            <span className="text-lg font-semibold">Statistics</span>
-          </div>
-          <div className="flex-1 overflow-y-auto flex justify-center py-4">
-            <ResultsComponent />
-          </div>
+          <Statistics />
         </div>
       </div>
 
@@ -62,13 +57,7 @@ export const HomePage = () => {
         style={{ minWidth: "min(75vw, 300px)" }}
       >
         <div className="p-4 flex flex-col h-full w-full">
-          <div className="flex justify-between items-center border-b pb-2">
-            <span className="text-lg font-semibold">Statistics</span>
-            <Button onClick={() => setShowSidebar(false)}>Close</Button>
-          </div>
-          <div className="flex-1 overflow-y-auto flex justify-center py-4">
-            <ResultsComponent />
-          </div>
+          <Statistics onBurgerClick={() => setShowSidebar(false)} />
         </div>
       </div>
     </div>

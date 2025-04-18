@@ -16,7 +16,9 @@ export const resultsSlice = createSlice({
       state.results = action.payload;
     },
     addResult: (state: StateType, action: PayloadAction<Result>) => {
-      state.results.push(action.payload);
+      if (!state.results.some((result) => result.id === action.payload.id)) {
+        state.results.push(action.payload);
+      }
     },
     reset: (state: StateType) => {
       state.results = [];

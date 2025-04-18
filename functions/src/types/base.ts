@@ -2,19 +2,16 @@ export interface Question {
   id: string;
   question: string;
   number: number;
+  word: string;
 }
 
-export interface Game {
-  questionId: string;
+export interface Game extends Question {
   lifes: number;
-  question: string;
-  lettersUsed: string;
+  letters: string;
   startTimestamp: number;
-  number: number;
 }
 
 export interface Result extends Game {
-  word: string;
   success: boolean;
   endTimestamp: number;
 }

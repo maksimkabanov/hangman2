@@ -30,3 +30,9 @@ export const saveToLocalStorage = (item: LocalStorageItem) => {
     console.error("Error saving to localStorage", error);
   }
 };
+export const updateLocalStorage = (part: Partial<LocalStorageItem>) => {
+  if (!localStorageValue)
+    throw new Error("Local storage value have not received yet!");
+  const item = { ...localStorageValue, ...part };
+  saveToLocalStorage(item);
+};

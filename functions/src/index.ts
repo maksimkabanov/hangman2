@@ -15,11 +15,7 @@ import {
 
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import {
-  CheckLetterResponse,
-  GetQuestionRequest,
-  СheckLetterRequest,
-} from "./types";
+import { СheckResultRequest, GetQuestionRequest } from "./types";
 import { Question } from "./types/base";
 
 // Start writing functions
@@ -32,13 +28,13 @@ import { Question } from "./types/base";
 
 initializeApp();
 
-export const checkLetter = onCall(
-  async (request: CallableRequest<СheckLetterRequest>) => {
-    if (!request.data || !request.data.questionId || !request.data.letter) {
+export const checkResult = onCall(
+  async (request: CallableRequest<СheckResultRequest>) => {
+    if (!request.data || !request.data.questionId || !request.data.letters) {
       throw new HttpsError("invalid-argument", "Invalid or missing arguments");
     }
 
-    const { questionId, letter } = request.data;
+    const { questionId, letters } = request.data;
 
     const questionRef = getFirestore().collection("questions").doc(questionId);
     const docSnap = await questionRef.get();
@@ -46,16 +42,18 @@ export const checkLetter = onCall(
     if (!docSnap.exists) {
       throw new HttpsError("not-found", "Question not found");
     }
-    const questionData = docSnap.data();
-    if (!questionData) {
-      throw new HttpsError("not-found", "Question not found");
-    }
+    const { question, word: wordString, number } = docSnap.data() as Question;
+
+    const word = Array.from(wordString)
+      .map((letter) => (letters.indexOf(letter) > -1 ? letter : "?"))
+      .join("");
 
     return {
-      questionId,
-      letter,
-      result: questionData.word.indexOf(letter) !== -1,
-    } as CheckLetterResponse;
+      question,
+      id: docSnap.id,
+      number,
+      word,
+    } as Question;
   }
 );
 
@@ -79,10 +77,15 @@ export const getQuestion = onCall(
       throw new HttpsError("not-found", `Question #${number} not found`);
     }
 
+    const { question, word: wordString } = questionData.data();
+
+    const word = Array.from({ length: wordString.length }, () => "?").join("");
+
     return {
-      question: questionData.data().question,
-      id: questionData.data().id,
-      number: number,
+      question,
+      id: questionData.id,
+      number,
+      word,
     } as Question;
   }
 );

@@ -1,24 +1,20 @@
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { firebaseApp } from "./firebase";
-import {
-  СheckLetterRequest,
-  CheckLetterResponse,
-  GetQuestionRequest,
-} from "@firebaseTypes/index";
+import { СheckResultRequest, GetQuestionRequest } from "@firebaseTypes/index";
 import { Question } from "@firebaseTypes/base";
 
 const functions = getFunctions(firebaseApp);
 
-export const firebaseFunctionCheckLetter = async (
+export const firebaseFunctionCheckResult = async (
   questionId: string,
-  letter: string
+  letters: string
 ) => {
-  const checkLetterCallable = httpsCallable<
-    СheckLetterRequest,
-    CheckLetterResponse
-  >(functions, "checkLetter");
+  const checkResultCallable = httpsCallable<СheckResultRequest, Question>(
+    functions,
+    "checkResult"
+  );
 
-  return await checkLetterCallable({ questionId, letter });
+  return await checkResultCallable({ questionId, letters });
 };
 
 export const firebaseFunctionGetQuestion = async (number: number) => {

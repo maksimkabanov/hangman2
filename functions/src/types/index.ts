@@ -1,9 +1,6 @@
-export interface СheckLetterRequest {
+export interface СheckResultRequest {
   questionId: string;
-  letter: string;
-}
-export interface CheckLetterResponse extends СheckLetterRequest {
-  result: boolean;
+  letters: string;
 }
 
 export interface GetQuestionRequest {
