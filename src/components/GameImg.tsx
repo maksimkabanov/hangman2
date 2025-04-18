@@ -11,7 +11,7 @@ enum gamePictures {
   liles0 = "images/stages/0.png",
 }
 
-export const GameImg = (lifes: number | undefined) => {
+export const GameImg = ({ lifes }: { lifes?: number | undefined }) => {
   return (
     <Fragment>
       <img

@@ -13,7 +13,9 @@ export const getLocalStorageValue = () => {
   try {
     if (!localStorageValue) {
       const jsonValue = localStorage.getItem(LOCAL_STORAGE_KEY);
-      localStorageValue = jsonValue ? JSON.parse(jsonValue) : undefined;
+      localStorageValue = jsonValue
+        ? JSON.parse(jsonValue)
+        : { results: [], currentGame: null };
     }
     return localStorageValue;
   } catch (error) {

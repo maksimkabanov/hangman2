@@ -8,6 +8,7 @@ export interface Question {
 export interface Game extends Question {
   lifes: number;
   letters: string;
+  finished: boolean;
   startTimestamp: number;
 }
 

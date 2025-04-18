@@ -18,19 +18,19 @@ export const GameResult = ({ result }: { result: Result }) => {
     >
       <div className="font-semibold">{result.question}</div>
       <div className="p-1 bg-gray-800 rounded text-white text-xs">
-        ✅ Answer: <span className="font-bold">{result.word}</span>
+        ✅ Answer: <span className="font-bold uppercase">{result.word}</span>
       </div>
 
       {correctLetters.length < lettersUsed.length && (
-        <div className="text-xs opacity-80 flex flex-row gap-2 w-full flex-wrap">
-          <span>❌</span>
-          {lettersUsed.map((usedLetter) =>
-            !correctLettersSet.has(usedLetter) ? (
-              <span key={usedLetter} className="font-bold text-red-700">
-                {usedLetter}
-              </span>
-            ) : null
-          )}
+        <div className="p-1 bg-gray-800 rounded text-white text-xs">
+          ❌ Wrong:{" "}
+          <span className="font-bold uppercase tracking-widest">
+            {lettersUsed.map((usedLetter) =>
+              !correctLettersSet.has(usedLetter) ? (
+                <span key={usedLetter}>{usedLetter}</span>
+              ) : null
+            )}
+          </span>
         </div>
       )}
 

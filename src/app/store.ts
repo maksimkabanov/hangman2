@@ -1,11 +1,11 @@
 import { ThunkAction, configureStore, Action } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
-import { currentGameSlice } from "../features/CurrentGame/CurrentGameSlice";
+import { gameSlice } from "../features/Game/GameSlice";
 import { resultsSlice } from "../features/Results/ResultsSlice";
 
 export const appStore = configureStore({
   reducer: {
-    currentGame: currentGameSlice.reducer,
+    currentGame: gameSlice.reducer,
     results: resultsSlice.reducer,
   },
 });

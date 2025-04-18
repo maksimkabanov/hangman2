@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import { CurrentGameComponent } from "../../features/CurrentGame/CurrentGameComponent";
+import { GameComponent } from "../../features/Game/GameComponent";
 import { Statistics } from "../../components/Statistics";
 
 export const HomePage = () => {
@@ -36,7 +36,7 @@ export const HomePage = () => {
         {/* Game area */}
         <div className="flex flex-col flex-1 min-w-[400px] overflow-hidden">
           <div className="flex-1 overflow-y-auto">
-            <CurrentGameComponent />
+            <GameComponent />
           </div>
           <div className="absolute bottom-2 left-2 text-gray-200 text-sm">
             Version: 0.1.20

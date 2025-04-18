@@ -1,6 +1,6 @@
 import { Game, Result } from "@firebaseTypes/base";
 import { AppDispatch, RootState } from "../app/store";
-import { currentGameSlice } from "../features/CurrentGame/CurrentGameSlice";
+import { gameSlice } from "../features/Game/GameSlice";
 import { resultsSlice } from "../features/Results/ResultsSlice";
 import {
   firebaseFunctionCheckResult,
@@ -20,7 +20,7 @@ const LIFES_COUNT = 5;
 
 export const resetAll = () => (dispatch: AppDispatch) => {
   dispatch(resultsSlice.actions.reset());
-  dispatch(currentGameSlice.actions.reset());
+  dispatch(gameSlice.actions.reset());
   saveToLocalStorage({ results: [], currentGame: null });
 };
 
@@ -29,12 +29,15 @@ const addResult =
   (dispatch: AppDispatch, getState: () => RootState) => {
     const result: Result = { ...game, success, endTimestamp: Date.now() };
     dispatch(resultsSlice.actions.addResult(result));
+    dispatch(gameSlice.actions.setResultToShow(result));
+    dispatch(gameSlice.actions.setGame(null));
     const results = selectResults(getState());
-    updateLocalStorage({ results });
+    updateLocalStorage({ results, currentGame: null });
   };
 
 const updateGame = (game: Game) => (dispatch: AppDispatch) => {
-  dispatch(currentGameSlice.actions.setGame(game));
+  dispatch(gameSlice.actions.setGame(game));
+  dispatch(gameSlice.actions.setResultToShow(null));
   updateLocalStorage({ currentGame: game });
 };
 
@@ -50,6 +53,7 @@ export const startNewGame =
         lifes: LIFES_COUNT,
         letters: "",
         startTimestamp: Date.now(),
+        finished: false,
       })
     );
   };
@@ -66,17 +70,20 @@ export const checkLetter =
     );
 
     const letterIsCorrect = question.word.indexOf(letter) !== -1;
+    const lifes = currentGame.lifes - (letterIsCorrect ? 0 : 1);
+    const finished = question.word.indexOf("?") === -1 || lifes < 1;
 
     const gameUpdated: Game = {
       ...currentGame,
       ...question,
       letters: newLetters,
-      lifes: currentGame.lifes - (letterIsCorrect ? 0 : 1),
+      lifes,
+      finished,
     };
 
-    if (question.word.indexOf("?") === -1 || gameUpdated.lifes < 1) {
+    dispatch(updateGame(gameUpdated));
+
+    if (finished) {
       dispatch(addResult(gameUpdated, gameUpdated.lifes > 0));
     }
-
-    dispatch(updateGame(gameUpdated));
   };

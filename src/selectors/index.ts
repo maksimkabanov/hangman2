@@ -2,6 +2,8 @@ import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
 export const selectCurrentGame = (state: RootState) => state.currentGame.game;
+export const selectResultToShow = (state: RootState) =>
+  state.currentGame.resultToShow;
 export const selectResults = (state: RootState) => state.results.results;
 
 export const selectQuestionNumber = createSelector(

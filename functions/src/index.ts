@@ -28,6 +28,8 @@ import { Question } from "./types/base";
 
 initializeApp();
 
+const LIFES_COUNT = 5;
+
 export const checkResult = onCall(
   async (request: CallableRequest<СheckResultRequest>) => {
     if (!request.data || !request.data.questionId || !request.data.letters) {
@@ -44,9 +46,16 @@ export const checkResult = onCall(
     }
     const { question, word: wordString, number } = docSnap.data() as Question;
 
-    const word = Array.from(wordString)
-      .map((letter) => (letters.indexOf(letter) > -1 ? letter : "?"))
-      .join("");
+    const wordLetters = Array.from(wordString).map((letter) =>
+      letters.indexOf(letter) > -1 ? letter : "?"
+    );
+
+    const lifes =
+      LIFES_COUNT -
+      letters.length +
+      wordLetters.filter((l) => l !== "?").length;
+
+    const word = lifes > 0 ? wordLetters.join("") : wordString;
 
     return {
       question,
