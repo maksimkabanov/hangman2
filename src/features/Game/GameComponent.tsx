@@ -47,7 +47,7 @@ export const GameComponent = () => {
             <GameImg loading={gameIsLoading} />
             {!gameIsLoading && (
               <div className="absolute top-[13%] right-[5%]">
-                <NewGameButton />
+                <NewGameButton dark={true} />
               </div>
             )}
           </div>
@@ -87,7 +87,7 @@ export const GameComponent = () => {
 
           {game.finished && (
             <div className="absolute top-[13%] left-0">
-              <NewGameButton />
+              <NewGameButton dark={true} />
             </div>
           )}
         </div>
