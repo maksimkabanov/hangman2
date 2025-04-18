@@ -3,7 +3,12 @@ import { useAppDispatch, useAppSelector } from "../../app/store";
 import { GameImg } from "../../components/GameImg";
 import { GameWord } from "../../components/GameWord";
 import { LettersBoard } from "../../components/LettersBoard";
-import { selectCurrentGame, selectResultToShow } from "../../selectors";
+import {
+  selectCurrentGame,
+  selectGameIsLoading,
+  selectLetterChecking,
+  selectResultToShow,
+} from "../../selectors";
 import { NewGameButton } from "../NewGameButton/NewGameButtonComponent";
 import clsx from "clsx";
 
@@ -30,6 +35,8 @@ export const GameComponent = () => {
   const dispatch = useAppDispatch();
   const currentGame = useAppSelector(selectCurrentGame);
   const resultToShow = useAppSelector(selectResultToShow);
+  const gameIsLoading = useAppSelector(selectGameIsLoading);
+  const letterChecking = useAppSelector(selectLetterChecking);
   const game = resultToShow ?? currentGame;
 
   if (!game)
@@ -37,10 +44,12 @@ export const GameComponent = () => {
       <div className="relative w-full h-full flex flex-col items-center">
         <div className="relative flex flex-1 w-full overflow-hidden items-center justify-center">
           <div className="relative max-w-full max-h-full aspect-square">
-            <GameImg />
-            <div className="absolute top-[13%] right-[5%]">
-              <NewGameButton />
-            </div>
+            <GameImg loading={gameIsLoading} />
+            {!gameIsLoading && (
+              <div className="absolute top-[13%] right-[5%]">
+                <NewGameButton />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -57,7 +66,11 @@ export const GameComponent = () => {
           {game.question}
         </h2>
         <GameWord game={game} />
-        <LettersBoard game={game} onLetterClick={onLetterClick} />
+        <LettersBoard
+          game={game}
+          onLetterClick={onLetterClick}
+          checkingLetter={letterChecking}
+        />
       </div>
       <div className="relative flex flex-1 w-full overflow-hidden items-center justify-center">
         <div className="relative max-w-full max-h-full aspect-square">

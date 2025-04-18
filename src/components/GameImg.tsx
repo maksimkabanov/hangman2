@@ -1,5 +1,5 @@
-import { Fragment } from "react";
 import clsx from "clsx";
+import { AnimationPulse } from "./AnimationPulse";
 
 enum gamePictures {
   new = "images/anime-pers.png",
@@ -11,65 +11,29 @@ enum gamePictures {
   liles0 = "images/stages/0.png",
 }
 
-export const GameImg = ({ lifes }: { lifes?: number | undefined }) => {
+export const GameImg = ({
+  lifes,
+  loading,
+}: {
+  lifes?: number;
+  loading?: boolean;
+}) => {
+  const src =
+    lifes === undefined
+      ? gamePictures.new
+      : gamePictures[`liles${lifes}` as keyof typeof gamePictures];
+
   return (
-    <Fragment>
+    <div className="relative w-full h-full">
+      {loading && <AnimationPulse animationDuration="0.5s" />}
       <img
         className={clsx(
           "max-w-full max-h-full",
-          lifes === undefined ? "block" : "hidden"
+          loading ? "opacity-50" : "opacity-100"
         )}
-        src={gamePictures.new}
-        alt="Max's hangman character new game"
+        src={src}
+        alt={`Max's hangman character ${lifes ?? "new game"} lifes`}
       />
-      <img
-        className={clsx(
-          "max-w-full max-h-full",
-          lifes === 5 ? "block" : "hidden"
-        )}
-        src={gamePictures.liles5}
-        alt="Max's hangman character 5 lifes"
-      />
-      <img
-        className={clsx(
-          "max-w-full max-h-full",
-          lifes === 4 ? "block" : "hidden"
-        )}
-        src={gamePictures.liles4}
-        alt="Max's hangman character 4 lifes"
-      />
-      <img
-        className={clsx(
-          "max-w-full max-h-full",
-          lifes === 3 ? "block" : "hidden"
-        )}
-        src={gamePictures.liles3}
-        alt="Max's hangman character 3 lifes"
-      />
-      <img
-        className={clsx(
-          "max-w-full max-h-full",
-          lifes === 2 ? "block" : "hidden"
-        )}
-        src={gamePictures.liles2}
-        alt="Max's hangman character 2 lifes"
-      />
-      <img
-        className={clsx(
-          "max-w-full max-h-full",
-          lifes === 1 ? "block" : "hidden"
-        )}
-        src={gamePictures.liles1}
-        alt="Max's hangman character 1 life"
-      />
-      <img
-        className={clsx(
-          "max-w-full max-h-full",
-          lifes === 0 ? "block" : "hidden"
-        )}
-        src={gamePictures.liles0}
-        alt="Max's hangman character 0 lifes"
-      />
-    </Fragment>
+    </div>
   );
 };

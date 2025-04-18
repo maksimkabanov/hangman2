@@ -12,6 +12,8 @@ import {
 } from "../providers/localStorage";
 import {
   selectCurrentGame,
+  selectGameIsLoading,
+  selectLetterChecking,
   selectQuestionNumber,
   selectResults,
 } from "../selectors";
@@ -43,47 +45,71 @@ const updateGame = (game: Game) => (dispatch: AppDispatch) => {
 
 export const startNewGame =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const gameIsLoading = selectGameIsLoading(getState());
+    if (gameIsLoading) return;
+
     const currentNumber = selectQuestionNumber(getState());
-    const { data: question } = await firebaseFunctionGetQuestion(
-      currentNumber + 1
-    );
-    dispatch(
-      updateGame({
-        ...question,
-        lifes: LIFES_COUNT,
-        letters: "",
-        startTimestamp: Date.now(),
-        finished: false,
-      })
-    );
+    dispatch(gameSlice.actions.setGameIsLoading(true));
+    dispatch(gameSlice.actions.setResultToShow(null));
+    dispatch(gameSlice.actions.setGame(null));
+    try {
+      const { data: question } = await firebaseFunctionGetQuestion(
+        currentNumber + 1
+      );
+      dispatch(
+        updateGame({
+          ...question,
+          lifes: LIFES_COUNT,
+          letters: "",
+          startTimestamp: Date.now(),
+          finished: false,
+        })
+      );
+    } catch (e) {
+      console.error("ERROR ON REQUEST", e);
+      alert("Sorry, error!");
+    } finally {
+      dispatch(gameSlice.actions.setGameIsLoading(false));
+    }
   };
 
 export const checkLetter =
   (letter: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const letterChecking = selectLetterChecking(getState());
+    if (letterChecking) return;
+
     const currentGame = selectCurrentGame(getState());
     if (!currentGame) return;
     const newLetters = currentGame.letters + letter;
-    const { data: question } = await firebaseFunctionCheckResult(
-      currentGame.id,
-      newLetters
-    );
+    dispatch(gameSlice.actions.setLetterChecking(letter));
+    try {
+      const { data: question } = await firebaseFunctionCheckResult(
+        currentGame.id,
+        newLetters
+      );
 
-    const letterIsCorrect = question.word.indexOf(letter) !== -1;
-    const lifes = currentGame.lifes - (letterIsCorrect ? 0 : 1);
-    const finished = question.word.indexOf("?") === -1 || lifes < 1;
+      const letterIsCorrect = question.word.indexOf(letter) !== -1;
+      const lifes = currentGame.lifes - (letterIsCorrect ? 0 : 1);
+      const finished = question.word.indexOf("?") === -1 || lifes < 1;
 
-    const gameUpdated: Game = {
-      ...currentGame,
-      ...question,
-      letters: newLetters,
-      lifes,
-      finished,
-    };
+      const gameUpdated: Game = {
+        ...currentGame,
+        ...question,
+        letters: newLetters,
+        lifes,
+        finished,
+      };
 
-    dispatch(updateGame(gameUpdated));
+      dispatch(updateGame(gameUpdated));
 
-    if (finished) {
-      dispatch(addResult(gameUpdated, gameUpdated.lifes > 0));
+      if (finished) {
+        dispatch(addResult(gameUpdated, gameUpdated.lifes > 0));
+      }
+    } catch (e) {
+      console.error("ERROR ON REQUEST", e);
+      alert("Sorry, error!");
+    } finally {
+      dispatch(gameSlice.actions.setLetterChecking(""));
     }
   };

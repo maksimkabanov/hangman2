@@ -2,6 +2,10 @@ import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
 export const selectCurrentGame = (state: RootState) => state.currentGame.game;
+export const selectGameIsLoading = (state: RootState) =>
+  state.currentGame.gameIsLoading;
+export const selectLetterChecking = (state: RootState) =>
+  state.currentGame.letterCkecking;
 export const selectResultToShow = (state: RootState) =>
   state.currentGame.resultToShow;
 export const selectResults = (state: RootState) => state.results.results;
