@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "importwords": "tsx .scripts/import-words.ts"
+    "importwords": "tsx .scripts/import-words.ts",
+    "postproduction": "git checkout production && git pull origin production && git reset --hard main && git push --force origin production && git checkout main"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

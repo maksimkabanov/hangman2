@@ -3,16 +3,22 @@ name: Deploy to AWS
 on:
   push:
     branches:
-      - production
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: AWS Ubuntu
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Create .env file from GitHub Secrets
+        run: |
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> .env
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> .env
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}" >> .env
 
       - name: Install dependencies
         run: npm install
@@ -34,26 +40,13 @@ jobs:
         run: ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "mkdir -p /var/www/hangman/build_new"
 
       - name: Deploy new build via SCP
-        run: scp -r -i ~/.ssh/id_ed25519 build/* ubuntu@${{ secrets.SERVER_IP }}:/var/www/hangman/build_new/
+        run: scp -r -i ~/.ssh/id_ed25519 dist/* ubuntu@${{ secrets.SERVER_IP }}:/var/www/hangman/build_new/
 
       - name: Atomically swap build folders
-        run: |
-          ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "
-            cd /var/www/hangman &&
-            if [ -d build ]; then
-              mv build build_old_$(date +%Y%m%d%H%M%S)
-            fi
-            mv build_new build
-          "
+        run: ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "cd /var/www/hangman && sudo rm -rf build && sudo mv build_new build"
 
       - name: Set correct permissions
         run: ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "sudo chown -R www-data:www-data /var/www/hangman/build && sudo chmod -R 755 /var/www/hangman/build"
 
-      #- name: Restart Nginx (optional, only if needed)
-      #  run: ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "sudo systemctl restart nginx"
-
-      - name: Cleanup old builds
-        run: |
-          ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "
-            cd /var/www/hangman &&
-            ls -dt build_old_* | tail -n +6 | xargs rm -rf || true"
+      - name: Cleanup old build_new directory
+        run: ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.SERVER_IP }} "rm -rf /var/www/hangman/build_new"

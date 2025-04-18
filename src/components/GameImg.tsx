@@ -11,6 +11,11 @@ enum gamePictures {
   liles0 = "images/stages/0.png",
 }
 
+Object.values(gamePictures).forEach((src) => {
+  const img = new Image();
+  img.src = src;
+});
+
 export const GameImg = ({
   lifes,
   loading,
@@ -24,7 +29,7 @@ export const GameImg = ({
       : gamePictures[`liles${lifes}` as keyof typeof gamePictures];
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative">
       {loading && <AnimationPulse animationDuration="0.5s" />}
       <img
         className={clsx(
