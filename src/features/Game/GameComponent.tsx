@@ -1,5 +1,6 @@
-import { checkLetter } from "../../actions/gameActions";
+import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import { checkLetter } from "../../actions/gameActions";
 import { GameImg } from "../../components/GameImg";
 import { GameWord } from "../../components/GameWord";
 import { LettersBoard } from "../../components/LettersBoard";
@@ -12,7 +13,12 @@ import {
 import { NewGameButton } from "../NewGameButton/NewGameButtonComponent";
 import clsx from "clsx";
 
-const getLifesColor = (lifes: number) => {
+/**
+ * Returns the appropriate color classes based on the number of remaining lives
+ * @param {number} lifes - Number of remaining lives
+ * @returns {string} Tailwind CSS classes for text and shadow colors
+ */
+const getLifesColor = (lifes: number): string => {
   switch (lifes) {
     case 5:
       return "text-green-400 shadow-green-400 drop-shadow-md";
@@ -31,15 +37,42 @@ const getLifesColor = (lifes: number) => {
   }
 };
 
+/**
+ * Main game component that handles the hangman game logic and display
+ * Manages game state, letter checking, and game results
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <GameComponent />
+ * ```
+ */
 export const GameComponent = () => {
   const dispatch = useAppDispatch();
   const currentGame = useAppSelector(selectCurrentGame);
   const resultToShow = useAppSelector(selectResultToShow);
   const gameIsLoading = useAppSelector(selectGameIsLoading);
   const letterChecking = useAppSelector(selectLetterChecking);
-  const game = resultToShow ?? currentGame;
 
-  if (!game)
+  // Use resultToShow if available, otherwise use currentGame
+  const game = useMemo(
+    () => resultToShow ?? currentGame,
+    [resultToShow, currentGame]
+  );
+
+  /**
+   * Handles letter click events
+   * @param {string} letter - The letter that was clicked
+   */
+  const onLetterClick = useCallback(
+    (letter: string) => {
+      dispatch(checkLetter(letter));
+    },
+    [dispatch]
+  );
+
+  // Show loading state or new game button if no game is in progress
+  if (!game) {
     return (
       <div className="relative w-full h-full flex flex-col items-center">
         <div className="relative flex flex-1 w-full overflow-hidden items-center justify-center">
@@ -54,10 +87,7 @@ export const GameComponent = () => {
         </div>
       </div>
     );
-
-  const onLetterClick = (letter: string) => {
-    dispatch(checkLetter(letter));
-  };
+  }
 
   return (
     <div className="relative w-full h-full flex flex-col items-center">

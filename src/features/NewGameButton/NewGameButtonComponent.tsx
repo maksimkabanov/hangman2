@@ -2,9 +2,33 @@ import clsx from "clsx";
 import { startNewGame } from "../../actions/gameActions";
 import { useAppDispatch } from "../../app/store";
 
-export const NewGameButton = ({ dark }: { dark?: boolean }) => {
+/**
+ * Props for the NewGameButton component
+ */
+type NewGameButtonProps = {
+  /**
+   * Whether to use dark theme for the button
+   * @default false
+   */
+  dark?: boolean;
+};
+
+/**
+ * Button component that starts a new game when clicked
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <NewGameButton dark={true} />
+ * ```
+ */
+export const NewGameButton = ({ dark }: NewGameButtonProps) => {
   const dispatch = useAppDispatch();
 
+  /**
+   * Handles the click event on the button
+   * Dispatches the startNewGame action
+   */
   const onNewGameClick = () => {
     dispatch(startNewGame());
   };
