@@ -22,7 +22,7 @@ const createTestStore = (initialState = {}) => {
         game: null,
         resultToShow: null,
         gameIsLoading: false,
-        letterCkecking: "",
+        lettersChecking: "",
       },
       results: {
         results: [],
