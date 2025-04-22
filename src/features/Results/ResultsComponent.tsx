@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useAppSelector } from "../../app/store";
-import { selectCurrentGame, selectResults } from "../../selectors";
+import { selectCurrentGameGame, selectResults } from "../../selectors";
 import { NewGameButton } from "../NewGameButton/NewGameButtonComponent";
 import { GameResult } from "../../components/GameResult";
 
@@ -16,7 +16,7 @@ import { GameResult } from "../../components/GameResult";
  */
 export const ResultsComponent = () => {
   const results = useAppSelector(selectResults);
-  const currentGame = useAppSelector(selectCurrentGame);
+  const currentGame = useAppSelector(selectCurrentGameGame);
 
   /**
    * Sort results by game number in descending order

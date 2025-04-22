@@ -16,7 +16,7 @@ import {
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { СheckResultRequest, GetQuestionRequest } from "./types";
-import { Question } from "./types/base";
+import { Question, Game } from "./types/base";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -57,12 +57,17 @@ export const checkResult = onCall(
 
     const word = lifes > 0 ? wordLetters.join("") : wordString;
 
+    const finished = word.indexOf("?") === -1 || lifes < 1;
+
     return {
       question,
       id: docSnap.id,
+      letters,
+      lifes,
+      finished,
       number,
       word,
-    } as Question;
+    } as Game;
   }
 );
 

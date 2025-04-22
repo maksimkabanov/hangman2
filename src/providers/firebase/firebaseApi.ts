@@ -1,7 +1,7 @@
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { firebaseApp } from "./firebase";
 import { СheckResultRequest, GetQuestionRequest } from "@firebaseTypes/index";
-import { Question } from "@firebaseTypes/base";
+import { Question, Game } from "@firebaseTypes/base";
 
 const functions = getFunctions(firebaseApp);
 
@@ -9,7 +9,7 @@ export const firebaseFunctionCheckResult = async (
   questionId: string,
   letters: string
 ) => {
-  const checkResultCallable = httpsCallable<СheckResultRequest, Question>(
+  const checkResultCallable = httpsCallable<СheckResultRequest, Game>(
     functions,
     "checkResult"
   );

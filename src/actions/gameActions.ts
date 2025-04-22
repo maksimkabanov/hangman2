@@ -2,18 +2,13 @@ import { Game, Result } from "@firebaseTypes/base";
 import { AppDispatch, RootState } from "../app/store";
 import { gameSlice } from "../features/Game/GameSlice";
 import { resultsSlice } from "../features/Results/ResultsSlice";
-import {
-  firebaseFunctionCheckResult,
-  firebaseFunctionGetQuestion,
-} from "../providers/firebase/firebaseApi";
+import { firebaseFunctionGetQuestion } from "../providers/firebase/firebaseApi";
 import {
   saveToLocalStorage,
   updateLocalStorage,
 } from "../providers/localStorage";
 import {
-  selectCurrentGame,
   selectGameIsLoading,
-  selectLetterChecking,
   selectQuestionNumber,
   selectResults,
 } from "../selectors";
@@ -26,10 +21,14 @@ export const resetAll = () => (dispatch: AppDispatch) => {
   saveToLocalStorage({ results: [], currentGame: null });
 };
 
-const addResult =
-  (game: Game, success: boolean) =>
-  (dispatch: AppDispatch, getState: () => RootState) => {
-    const result: Result = { ...game, success, endTimestamp: Date.now() };
+export const addResultThunk =
+  (game: Game) => (dispatch: AppDispatch, getState: () => RootState) => {
+    const lettersSet = new Set(game.letters);
+    const result: Result = {
+      ...game,
+      endTimestamp: Date.now(),
+      success: game.word.split("").every((l) => lettersSet.has(l)),
+    };
     dispatch(resultsSlice.actions.addResult(result));
     dispatch(gameSlice.actions.setResultToShow(result));
     dispatch(gameSlice.actions.setGame(null));
@@ -37,10 +36,14 @@ const addResult =
     updateLocalStorage({ results, currentGame: null });
   };
 
-const updateGame = (game: Game) => (dispatch: AppDispatch) => {
+export const updateGameThunk = (game: Game) => (dispatch: AppDispatch) => {
   dispatch(gameSlice.actions.setGame(game));
   dispatch(gameSlice.actions.setResultToShow(null));
-  updateLocalStorage({ currentGame: game });
+  if (game.finished) {
+    dispatch(addResultThunk(game));
+  } else {
+    updateLocalStorage({ currentGame: game });
+  }
 };
 
 export const startNewGame =
@@ -57,7 +60,7 @@ export const startNewGame =
         currentNumber + 1
       );
       dispatch(
-        updateGame({
+        updateGameThunk({
           ...question,
           lifes: LIFES_COUNT,
           letters: "",
@@ -70,46 +73,5 @@ export const startNewGame =
       alert("Sorry, error!");
     } finally {
       dispatch(gameSlice.actions.setGameIsLoading(false));
-    }
-  };
-
-export const checkLetter =
-  (letter: string) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    const letterChecking = selectLetterChecking(getState());
-    if (letterChecking) return;
-
-    const currentGame = selectCurrentGame(getState());
-    if (!currentGame) return;
-    const newLetters = currentGame.letters + letter;
-    dispatch(gameSlice.actions.setLetterChecking(letter));
-    try {
-      const { data: question } = await firebaseFunctionCheckResult(
-        currentGame.id,
-        newLetters
-      );
-
-      const letterIsCorrect = question.word.indexOf(letter) !== -1;
-      const lifes = currentGame.lifes - (letterIsCorrect ? 0 : 1);
-      const finished = question.word.indexOf("?") === -1 || lifes < 1;
-
-      const gameUpdated: Game = {
-        ...currentGame,
-        ...question,
-        letters: newLetters,
-        lifes,
-        finished,
-      };
-
-      dispatch(updateGame(gameUpdated));
-
-      if (finished) {
-        dispatch(addResult(gameUpdated, gameUpdated.lifes > 0));
-      }
-    } catch (e) {
-      console.error("ERROR ON REQUEST", e);
-      alert("Sorry, error!");
-    } finally {
-      dispatch(gameSlice.actions.setLetterChecking(""));
     }
   };

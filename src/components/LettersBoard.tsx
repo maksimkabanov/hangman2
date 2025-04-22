@@ -7,21 +7,24 @@ const LETTERS_ARRAY = LETTERS.split("");
 
 export const LettersBoard = ({
   game,
-  checkingLetter,
+  checkingLetters,
   onLetterClick,
+  locked,
 }: {
   game: Game;
-  checkingLetter?: string;
+  checkingLetters?: string;
+  locked?: boolean;
   onLetterClick: (letter: string) => void;
 }) => {
   const usedLettersSet = new Set(game.letters);
   const correctLettersSet = new Set(game.word);
+  const checkingLettersSet = new Set(checkingLetters);
 
   return (
     <div
       className={clsx(
         "flex flex-row gap-2 p-4 flex-wrap justify-center",
-        !!checkingLetter && "pointer-events-none"
+        !!locked && "pointer-events-none"
       )}
     >
       {LETTERS_ARRAY.map((letter) => {
@@ -32,7 +35,7 @@ export const LettersBoard = ({
             used={usedLettersSet.has(letter)}
             disabled={game.finished}
             onClick={onLetterClick}
-            isChecking={checkingLetter === letter}
+            isChecking={checkingLettersSet.has(letter)}
             letter={letter}
           />
         );

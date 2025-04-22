@@ -3,11 +3,11 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { GameComponent } from "../Game/GameComponent";
 import { gameSlice } from "../Game/GameSlice";
-import { checkLetter } from "../../actions/gameActions";
+import { checkLetterThunk } from "../../actions/checkLetterAction";
 
 // Mock the dependencies
-jest.mock("../../actions/gameActions", () => ({
-  checkLetter: jest.fn(() => () => {}),
+jest.mock("../../actions/checkLetterAction", () => ({
+  checkLetterThunk: jest.fn(() => () => {}),
 }));
 
 // Create a test store
@@ -21,7 +21,7 @@ const createTestStore = (initialState = {}) => {
         game: null,
         resultToShow: null,
         gameIsLoading: false,
-        letterCkecking: "",
+        lettersChecking: "",
         ...initialState,
       },
     },
@@ -88,7 +88,7 @@ describe("GameComponent", () => {
     const letterButton = screen.getByText("b");
     fireEvent.click(letterButton);
 
-    expect(checkLetter).toHaveBeenCalledWith("b");
+    expect(checkLetterThunk).toHaveBeenCalledWith("b");
   });
 
   it("shows new game button when game is finished", () => {

@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { checkLetter } from "../../actions/gameActions";
+import { checkLetterThunk } from "../../actions/checkLetterAction";
 import { GameImg } from "../../components/GameImg";
 import { GameWord } from "../../components/GameWord";
 import { LettersBoard } from "../../components/LettersBoard";
 import {
-  selectCurrentGame,
+  hasChancesSelector,
+  selectCurrentGameGame,
   selectGameIsLoading,
-  selectLetterChecking,
+  selectLettersChecking,
   selectResultToShow,
 } from "../../selectors";
 import { NewGameButton } from "../NewGameButton/NewGameButtonComponent";
@@ -49,10 +50,11 @@ const getLifesColor = (lifes: number): string => {
  */
 export const GameComponent = () => {
   const dispatch = useAppDispatch();
-  const currentGame = useAppSelector(selectCurrentGame);
+  const currentGame = useAppSelector(selectCurrentGameGame);
   const resultToShow = useAppSelector(selectResultToShow);
   const gameIsLoading = useAppSelector(selectGameIsLoading);
-  const letterChecking = useAppSelector(selectLetterChecking);
+  const lettersChecking = useAppSelector(selectLettersChecking);
+  const hasChances = useAppSelector(hasChancesSelector);
 
   // Use resultToShow if available, otherwise use currentGame
   const game = useMemo(
@@ -66,7 +68,7 @@ export const GameComponent = () => {
    */
   const onLetterClick = useCallback(
     (letter: string) => {
-      dispatch(checkLetter(letter));
+      dispatch(checkLetterThunk(letter));
     },
     [dispatch]
   );
@@ -99,7 +101,8 @@ export const GameComponent = () => {
         <LettersBoard
           game={game}
           onLetterClick={onLetterClick}
-          checkingLetter={letterChecking}
+          checkingLetters={lettersChecking}
+          locked={!hasChances}
         />
       </div>
       <div className="relative flex flex-1 w-full overflow-hidden items-center justify-center">

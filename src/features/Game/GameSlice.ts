@@ -4,7 +4,7 @@ import { getLocalStorageValue } from "../../providers/localStorage";
 
 type StateType = {
   gameIsLoading: boolean;
-  letterCkecking: string;
+  lettersChecking: string;
   game: Game | undefined | null;
   resultToShow: Result | undefined | null;
 };
@@ -15,7 +15,7 @@ type StateType = {
  */
 const initialState: StateType = {
   gameIsLoading: false,
-  letterCkecking: "",
+  lettersChecking: "",
   game: getLocalStorageValue()?.currentGame as Game | undefined | null,
   resultToShow: undefined as Result | undefined | null,
 };
@@ -39,6 +39,14 @@ export const gameSlice = createSlice({
       state.game = action.payload;
     },
     /**
+     * Updates the current game
+     * @param {StateType} state - Current state
+     * @param {PayloadAction<Partial<Game>>} action - Action containing the game to set
+     */
+    updateGame: (state: StateType, action: PayloadAction<Partial<Game>>) => {
+      if (state.game) state.game = { ...state.game, ...action.payload };
+    },
+    /**
      * Sets the game loading state
      * @param {StateType} state - Current state
      * @param {PayloadAction<boolean>} action - Action containing the loading state
@@ -51,8 +59,31 @@ export const gameSlice = createSlice({
      * @param {StateType} state - Current state
      * @param {PayloadAction<string>} action - Action containing the letter being checked
      */
-    setLetterChecking: (state: StateType, action: PayloadAction<string>) => {
-      state.letterCkecking = action.payload;
+    setLettersChecking: (state: StateType, action: PayloadAction<string>) => {
+      if (state.game) state.lettersChecking = action.payload;
+    },
+    /**
+     * Add the currently checking letter
+     * @param {StateType} state - Current state
+     * @param {PayloadAction<string>} action - Action containing the letter being checked
+     */
+    addLetterChecking: (state: StateType, action: PayloadAction<string>) => {
+      if (state.game) state.lettersChecking += action.payload;
+    },
+    /**
+     * Sets the currently checking letter
+     * @param {StateType} state - Current state
+     * @param {PayloadAction<string>} action - Action containing the letter being checked
+     */
+    removeLettersChecking: (
+      state: StateType,
+      action: PayloadAction<string>
+    ) => {
+      const checkedSet = new Set(action.payload);
+      state.lettersChecking = state.lettersChecking
+        .split("")
+        .filter((l) => !checkedSet.has(l))
+        .join("");
     },
     /**
      * Sets the result to display
