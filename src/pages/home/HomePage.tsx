@@ -13,14 +13,21 @@ export const HomePage = () => {
   return (
     <div className="fixed inset-0 flex flex-col items-center w-full h-[100svh] min-h-[100dvh] overflow-hidden">
       {/* Header */}
-      <div className="flex flex-row items-center text-gray-300 border-b w-full">
+      <div className="flex flex-row items-center text-gray-400 border-b w-full">
         <div className="text-red-100">
           <IconButton onClick={onResetAllClick} color="inherit">
             <RestartAltIcon />
           </IconButton>
         </div>
         <span className="mx-auto text-center flex-1">
-          Hello in Hangman by Maksim!
+          Hangman by{" "}
+          <a
+            className="text-gray-600 underline"
+            href="https://maxkab.com"
+            target="_blank"
+          >
+            Maksim Kabanov
+          </a>
         </span>
         <div className="ml-auto"></div>
         {/* Burger menu (visible only on small screens) */}
