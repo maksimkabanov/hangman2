@@ -22,6 +22,7 @@ export const checkLetterThunk =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const state = getState();
     const lettersChecking = selectLettersChecking(state);
+    if (lettersChecking.indexOf(letter) !== -1) return;
     const newLetters = lettersChecking + letter;
     dispatch(gameSlice.actions.setLettersChecking(newLetters));
 
