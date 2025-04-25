@@ -53,7 +53,7 @@ export const checkResult = onCall(
     const lifes =
       LIFES_COUNT -
       letters.length +
-      wordLetters.filter((l) => l !== "?").length;
+      Array.from(new Set(wordLetters)).filter((l) => l !== "?").length;
 
     const word = lifes > 0 ? wordLetters.join("") : wordString;
 
